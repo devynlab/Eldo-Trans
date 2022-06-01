@@ -1,20 +1,16 @@
 package io.devynlab.eldotrans.system.vehicle.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.devynlab.eldotrans.generic.model.ModelBase;
 import io.devynlab.eldotrans.system.vehicle.enums.CarModels;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "vehicles")
 @Data
-public class Vehicle implements Serializable {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+public class Vehicle extends ModelBase {
 
   @Column(name = "num_plate", nullable = false, unique = true)
   private String numPlate;
