@@ -79,7 +79,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements User
     user.setFirstName(userDTO.getFirstName());
     user.setLastName(userDTO.getLastName());
     user.setUsername(userDTO.getUsername());
-    user.setEmail(user.getEmail());
+    user.setEmail(userDTO.getEmail());
     return em.merge(user);
   }
 
