@@ -14,9 +14,28 @@ import java.util.Date;
 @Data
 public class Trip extends ModelBase {
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "destination_from", nullable = false, columnDefinition = "varchar(20) default 'ELDORET'")
+  private Destinations tripFrom;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "destination_to", nullable = false, columnDefinition = "varchar(20) default 'NAIROBI'")
+  private Destinations tripTo;
+
   @Column(name = "date", nullable = false)
   @Temporal(TemporalType.DATE)
   private Date date;
+
+  @Column(name = "no_of_passengers")
+  private Integer numOfPassengers;
+
+  @Column(name = "price", nullable = false)
+  private Integer price;
+
+  @JsonIgnore
+  @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false, updatable = false)
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Vehicle vehicle;
 
   @Column(name = "departed_at")
   @Temporal(TemporalType.TIMESTAMP)
@@ -25,21 +44,5 @@ public class Trip extends ModelBase {
   @Column(name = "arrived_at")
   @Temporal(TemporalType.TIMESTAMP)
   private Date arrivedAt;
-
-  @JsonIgnore
-  @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false, updatable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Vehicle vehicle;
-
-  @Column(name = "no_of_passengers")
-  private Integer numOfPassengers;
-
-  @Enumerated(EnumType.STRING)
-  @Column(name = "destination_from", nullable = false, columnDefinition = "varchar(20) default 'ELDORET'")
-  private Destinations tripFrom;
-
-  @Enumerated(EnumType.STRING)
-  @Column(name = "destination_to", nullable = false, columnDefinition = "varchar(20) default 'NAIROBI'")
-  private Destinations tripTo;
 
 }

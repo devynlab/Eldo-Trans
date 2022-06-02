@@ -7,6 +7,13 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 
+/*
+ *TODO
+ * Get rid of booking and just use filters to search for available trips
+ * Trip model should have the following fields for filtering: from, to, date
+ * The resulting filtered list should match the filters, showing the remaining number of seats and the prices
+ */
+
 @Entity
 @Table(name = "booking")
 @Data

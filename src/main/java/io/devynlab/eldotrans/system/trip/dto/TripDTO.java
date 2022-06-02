@@ -11,23 +11,25 @@ import java.util.Date;
 @Data
 public class TripDTO implements Serializable {
   private Long id;
-  private Date date;
-  private Date departedAt;
-  private Date arrivedAt;
-  private Vehicle vehicle;
-  private Integer numOfPassengers;
   private Destinations tripFrom;
   private Destinations tripTo;
+  private Date date;
+  private Integer numOfPassengers;
+  private Integer price;
+  private Vehicle vehicle;
+  private Date departedAt;
+  private Date arrivedAt;
 
   public TripDTO fromTrip(Trip trip) {
     id = trip.getId();
-    date = trip.getDate();
-    departedAt = trip.getDepartedAt();
-    arrivedAt = trip.getArrivedAt();
-    vehicle = trip.getVehicle();
-    numOfPassengers = trip.getNumOfPassengers();
     tripFrom = trip.getTripFrom();
     tripTo = trip.getTripTo();
+    date = trip.getDate();
+    numOfPassengers = trip.getNumOfPassengers();
+    price = trip.getPrice();
+    vehicle = trip.getVehicle();
+    departedAt = trip.getDepartedAt();
+    arrivedAt = trip.getArrivedAt();
     return this;
   }
 }
