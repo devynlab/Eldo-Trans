@@ -8,9 +8,9 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "trips")
+@Table(name = "booking")
 @Data
-public class Trip extends ModelBase {
+public class Booking extends ModelBase {
 
   @Column(name = "description", nullable = false)
   private String description;

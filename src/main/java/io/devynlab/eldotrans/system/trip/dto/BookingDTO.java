@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class TripDTO implements Serializable {
+public class BookingDTO implements Serializable {
   private Long id;
   private String description;
   private Destinations departure;

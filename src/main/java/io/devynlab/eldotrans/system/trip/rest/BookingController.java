@@ -1,8 +1,8 @@
 package io.devynlab.eldotrans.system.trip.rest;
 
 import io.devynlab.eldotrans.generic.controller.BaseController;
-import io.devynlab.eldotrans.system.trip.dto.TripDTO;
-import io.devynlab.eldotrans.system.trip.service.TripService;
+import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
+import io.devynlab.eldotrans.system.trip.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,15 +13,15 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/trips")
 @RequiredArgsConstructor
-public class TripController extends BaseController {
+public class BookingController extends BaseController {
 
-  private final TripService tripService;
+  private final BookingService bookingService;
 
   @PostMapping()
   @ResponseBody
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity post(@RequestBody @Valid TripDTO tripDTO) {
-    return entity(tripService.save(tripDTO));
+  public ResponseEntity post(@RequestBody @Valid BookingDTO bookingDTO) {
+    return entity(bookingService.save(bookingDTO));
   }
 
   @GetMapping()
@@ -30,21 +30,21 @@ public class TripController extends BaseController {
   public ResponseEntity findAll(@RequestParam(name = "page", defaultValue = "1") Integer page,
                                 @RequestParam(name = "pageSize", defaultValue = "50") Integer pageSize,
                                 @RequestParam(name = "search", required = false) String search) {
-    return entity(tripService.findAllPaginated(page, pageSize, search));
+    return entity(bookingService.findAllPaginated(page, pageSize, search));
   }
 
   @GetMapping("/{id}")
   @ResponseBody
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity getOne(@PathVariable("id") Long tripId) {
-    return entity(tripService.findById(tripId));
+    return entity(bookingService.findById(tripId));
   }
 
   @PutMapping("/{id}")
   @ResponseBody
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity update(@PathVariable("id") Long tripId, @RequestBody @Valid TripDTO tripDTO) {
-    return entity(tripService.update(tripId, tripDTO));
+  public ResponseEntity update(@PathVariable("id") Long tripId, @RequestBody @Valid BookingDTO bookingDTO) {
+    return entity(bookingService.update(tripId, bookingDTO));
   }
 
 }

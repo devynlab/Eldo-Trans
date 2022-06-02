@@ -2,9 +2,9 @@ package io.devynlab.eldotrans.system.trip.service;
 
 import io.devynlab.eldotrans.generic.dto.ObjectListWrapper;
 import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
-import io.devynlab.eldotrans.system.trip.dto.TripDTO;
-import io.devynlab.eldotrans.system.trip.model.Trip;
-import io.devynlab.eldotrans.system.trip.repos.TripRepository;
+import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
+import io.devynlab.eldotrans.system.trip.model.Booking;
+import io.devynlab.eldotrans.system.trip.repos.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,9 +21,9 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements TripService {
+public class BookingServiceImpl extends BaseServiceImpl<Booking, Long> implements BookingService {
 
-  private final TripRepository tripRepo;
+  private final BookingRepository tripRepo;
 
   @PersistenceContext
   private EntityManager em;
@@ -31,31 +31,31 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
   @PostConstruct
   public void init() {
     tripRepo.setEm(em);
-    setEntityClass(Trip.class);
+    setEntityClass(Booking.class);
     setGenericDao(tripRepo);
   }
 
   @Override
-  public Trip save(TripDTO tripDTO) {
+  public Booking save(BookingDTO bookingDTO) {
     ModelMapper mapper = new ModelMapper();
-    Trip trip = mapper.map(tripDTO, Trip.class);
-    trip.setDescription(tripDTO.getDeparture().toString() + " - " + trip.getArrival().toString());
-    return em.merge(trip);
+    Booking booking = mapper.map(bookingDTO, Booking.class);
+    booking.setDescription(bookingDTO.getDeparture().toString() + " - " + bookingDTO.getArrival().toString());
+    return em.merge(booking);
   }
 
   @Override
-  public ObjectListWrapper<Trip> findAllPaginated(Integer page, Integer pageSize, String search) {
+  public ObjectListWrapper<Booking> findAllPaginated(Integer page, Integer pageSize, String search) {
     ObjectListWrapper wrapper = new ObjectListWrapper();
     HashMap<String, Object> trips = tripRepo.findAllPaged(page, pageSize, search);
-    wrapper.setList((List) trips.get("trips"));
-    wrapper.setTotal(Integer.parseInt(trips.get("trip_count").toString()));
+    wrapper.setList((List) trips.get("bookings"));
+    wrapper.setTotal(Integer.parseInt(trips.get("booking_count").toString()));
     wrapper.setPageSize(pageSize);
     wrapper.setCurrentPage(page);
     return wrapper;
   }
 
   @Override
-  public Trip update(Long tripId, TripDTO tripDTO) {
+  public Booking update(Long tripId, BookingDTO bookingDTO) {
     return null;
   }
 }
