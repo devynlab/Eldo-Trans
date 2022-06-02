@@ -2,10 +2,13 @@ package io.devynlab.eldotrans.system.vehicle.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.devynlab.eldotrans.generic.model.ModelBase;
+import io.devynlab.eldotrans.system.trip.model.Trip;
 import io.devynlab.eldotrans.system.vehicle.enums.CarModels;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "vehicles")
@@ -28,5 +31,9 @@ public class Vehicle extends ModelBase {
   @JsonIgnore
   @Column(name = "available", columnDefinition = "tinyint(1) default '1'")
   private boolean available = true;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "vehicle")
+  private List<Trip> tripList = new ArrayList<>();
 
 }
