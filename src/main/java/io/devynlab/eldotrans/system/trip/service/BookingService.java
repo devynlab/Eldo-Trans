@@ -10,5 +10,5 @@ public interface BookingService extends BaseService<Booking, Long> {
 
   ObjectListWrapper<Booking> findAllPaginated(Integer page, Integer pageSize, String search);
 
-  Booking update(Long tripId, BookingDTO bookingDTO);
+  Booking update(Long bookingId, BookingDTO bookingDTO);
 }

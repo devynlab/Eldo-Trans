@@ -36,15 +36,15 @@ public class BookingController extends BaseController {
   @GetMapping("/{id}")
   @ResponseBody
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity getOne(@PathVariable("id") Long tripId) {
-    return entity(bookingService.findById(tripId));
+  public ResponseEntity getOne(@PathVariable("id") Long bookingId) {
+    return entity(bookingService.findById(bookingId));
   }
 
   @PutMapping("/{id}")
   @ResponseBody
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ResponseEntity update(@PathVariable("id") Long tripId, @RequestBody @Valid BookingDTO bookingDTO) {
-    return entity(bookingService.update(tripId, bookingDTO));
+  public ResponseEntity update(@PathVariable("id") Long bookingId, @RequestBody @Valid BookingDTO bookingDTO) {
+    return entity(bookingService.update(bookingId, bookingDTO));
   }
 
 }

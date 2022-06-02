@@ -55,7 +55,7 @@ public class BookingServiceImpl extends BaseServiceImpl<Booking, Long> implement
   }
 
   @Override
-  public Booking update(Long tripId, BookingDTO bookingDTO) {
+  public Booking update(Long bookingId, BookingDTO bookingDTO) {
     return null;
   }
 }
