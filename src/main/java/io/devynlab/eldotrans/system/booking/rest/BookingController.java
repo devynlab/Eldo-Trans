@@ -1,8 +1,8 @@
-package io.devynlab.eldotrans.system.trip.rest;
+package io.devynlab.eldotrans.system.booking.rest;
 
 import io.devynlab.eldotrans.generic.controller.BaseController;
-import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
-import io.devynlab.eldotrans.system.trip.service.BookingService;
+import io.devynlab.eldotrans.system.booking.dto.BookingDTO;
+import io.devynlab.eldotrans.system.booking.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

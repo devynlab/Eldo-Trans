@@ -1,4 +1,4 @@
-package io.devynlab.eldotrans.system.trip.enums;
+package io.devynlab.eldotrans.system.booking.enums;
 
 public enum Destinations {
   ELDORET("Eldoret, along Uganda road at the National Oil Petroleum Station near the old Ukwala Supermarket"),

@@ -1,6 +1,6 @@
-package io.devynlab.eldotrans.system.trip.dto;
+package io.devynlab.eldotrans.system.booking.dto;
 
-import io.devynlab.eldotrans.system.trip.enums.Destinations;
+import io.devynlab.eldotrans.system.booking.enums.Destinations;
 import lombok.Data;
 
 import java.io.Serializable;

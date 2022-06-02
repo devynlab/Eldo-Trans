@@ -1,7 +1,7 @@
-package io.devynlab.eldotrans.system.trip.model;
+package io.devynlab.eldotrans.system.booking.model;
 
 import io.devynlab.eldotrans.generic.model.ModelBase;
-import io.devynlab.eldotrans.system.trip.enums.Destinations;
+import io.devynlab.eldotrans.system.booking.enums.Destinations;
 import lombok.Data;
 
 import javax.persistence.*;

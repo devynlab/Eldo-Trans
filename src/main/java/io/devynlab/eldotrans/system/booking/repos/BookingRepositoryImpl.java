@@ -1,7 +1,7 @@
-package io.devynlab.eldotrans.system.trip.repos;
+package io.devynlab.eldotrans.system.booking.repos;
 
 import io.devynlab.eldotrans.generic.repository.GenericRepositoryImpl;
-import io.devynlab.eldotrans.system.trip.model.Booking;
+import io.devynlab.eldotrans.system.booking.model.Booking;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,9 +1,9 @@
-package io.devynlab.eldotrans.system.trip.service;
+package io.devynlab.eldotrans.system.booking.service;
 
 import io.devynlab.eldotrans.generic.dto.ObjectListWrapper;
 import io.devynlab.eldotrans.generic.service.BaseService;
-import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
-import io.devynlab.eldotrans.system.trip.model.Booking;
+import io.devynlab.eldotrans.system.booking.dto.BookingDTO;
+import io.devynlab.eldotrans.system.booking.model.Booking;
 
 public interface BookingService extends BaseService<Booking, Long> {
   Booking save(BookingDTO bookingDTO);

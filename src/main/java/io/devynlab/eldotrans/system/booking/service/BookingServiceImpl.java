@@ -1,10 +1,10 @@
-package io.devynlab.eldotrans.system.trip.service;
+package io.devynlab.eldotrans.system.booking.service;
 
 import io.devynlab.eldotrans.generic.dto.ObjectListWrapper;
 import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
-import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
-import io.devynlab.eldotrans.system.trip.model.Booking;
-import io.devynlab.eldotrans.system.trip.repos.BookingRepository;
+import io.devynlab.eldotrans.system.booking.dto.BookingDTO;
+import io.devynlab.eldotrans.system.booking.model.Booking;
+import io.devynlab.eldotrans.system.booking.repos.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
