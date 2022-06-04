@@ -17,6 +17,7 @@ public class TripDTO implements Serializable {
   private Integer numOfPassengers;
   private Integer price;
   private Vehicle vehicle;
+  private Long vehicleId;
   private Date departedAt;
   private Date arrivedAt;
 

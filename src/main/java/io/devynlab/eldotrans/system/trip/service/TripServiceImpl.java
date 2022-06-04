@@ -1,13 +1,17 @@
 package io.devynlab.eldotrans.system.trip.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.devynlab.eldotrans.generic.dto.ObjectListWrapper;
+import io.devynlab.eldotrans.generic.exception.GeneralException;
+import io.devynlab.eldotrans.generic.exception.NotFoundException;
 import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
 import io.devynlab.eldotrans.system.trip.dto.TripDTO;
 import io.devynlab.eldotrans.system.trip.model.Trip;
 import io.devynlab.eldotrans.system.trip.repos.TripRepository;
+import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +41,22 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
 
   @Override
   public Trip save(TripDTO tripDTO) {
-    ModelMapper mapper = new ModelMapper();
-    Trip trip = mapper.map(tripDTO, Trip.class);
-    return em.merge(trip);
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      Trip trip = objectMapper.convertValue(tripDTO, Trip.class);
+      Vehicle vehicle = em.find(Vehicle.class, tripDTO.getVehicleId());
+      if (vehicle == null) {
+        throw new NotFoundException("Vehicle");
+      }
+      trip.setVehicle(vehicle);
+      trip.setNumOfPassengers(vehicle.getNumOfSeats());
+      return tripRepo.save(trip);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new GeneralException(e.getMessage());
+    }
   }
 
   @Override
@@ -57,4 +74,5 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
   public Trip update(Long bookingId, TripDTO tripDTO) {
     return null;
   }
+
 }

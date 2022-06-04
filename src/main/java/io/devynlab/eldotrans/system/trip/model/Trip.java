@@ -1,18 +1,22 @@
 package io.devynlab.eldotrans.system.trip.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.devynlab.eldotrans.generic.model.ModelBase;
 import io.devynlab.eldotrans.system.booking.enums.Destinations;
 import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "trips")
 @Data
-public class Trip extends ModelBase {
+public class Trip implements Serializable {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "destination_from", nullable = false, columnDefinition = "varchar(20) default 'ELDORET'")
@@ -37,6 +41,9 @@ public class Trip extends ModelBase {
   @ManyToOne(fetch = FetchType.LAZY)
   private Vehicle vehicle;
 
+  @Column(name = "vehicle_id", nullable = false)
+  private Integer vehicleId;
+
   @Column(name = "departed_at")
   @Temporal(TemporalType.TIMESTAMP)
   private Date departedAt;
@@ -44,5 +51,9 @@ public class Trip extends ModelBase {
   @Column(name = "arrived_at")
   @Temporal(TemporalType.TIMESTAMP)
   private Date arrivedAt;
+
+  @JsonIgnore
+  @Column(name = "deleted", columnDefinition = "tinyint(1) default '0'")
+  private boolean deleted = false;
 
 }
