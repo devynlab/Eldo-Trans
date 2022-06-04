@@ -2,6 +2,7 @@ package io.devynlab.eldotrans.system.trip.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.devynlab.eldotrans.auth.service.AuthService;
 import io.devynlab.eldotrans.generic.dto.ObjectListWrapper;
 import io.devynlab.eldotrans.generic.exception.BadRequestException;
 import io.devynlab.eldotrans.generic.exception.GeneralException;
@@ -10,8 +11,10 @@ import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
 import io.devynlab.eldotrans.system.trip.dto.TripDTO;
 import io.devynlab.eldotrans.system.trip.enums.Destinations;
 import io.devynlab.eldotrans.system.trip.model.Trip;
+import io.devynlab.eldotrans.system.trip.model.TripHistory;
 import io.devynlab.eldotrans.system.trip.repos.TripRepository;
 import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
+import io.devynlab.eldotrans.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ import java.util.List;
 public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements TripService {
 
   private final TripRepository tripRepo;
+  private final AuthService authService;
 
   @PersistenceContext
   private EntityManager em;
@@ -44,18 +48,33 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
 
   @Override
   public Trip save(TripDTO tripDTO) {
+    User onlineUser = authService.loggedUser();
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
       objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       Trip trip = objectMapper.convertValue(tripDTO, Trip.class);
-      Vehicle vehicle = em.find(Vehicle.class, tripDTO.getVehicleId());
-      if (vehicle == null) {
-        throw new NotFoundException("Vehicle");
+      if (onlineUser.getVehicle() != null && tripDTO.getVehicle() == null) {
+        trip.setVehicle(onlineUser.getVehicle());
+        trip.setNumOfPassengers(onlineUser.getVehicle().getNumOfSeats());
+      } else if (onlineUser.getVehicle() == null && tripDTO.getVehicleId() == null) {
+        throw new BadRequestException("Vehicle needed to successfully create a trip");
+      } else {
+        Vehicle vehicle = em.find(Vehicle.class, tripDTO.getVehicleId());
+        if (vehicle == null) {
+          throw new NotFoundException("Vehicle");
+        }
+        trip.setVehicle(vehicle);
+        trip.setNumOfPassengers(vehicle.getNumOfSeats());
       }
-      trip.setVehicle(vehicle);
-      trip.setNumOfPassengers(vehicle.getNumOfSeats());
-      return tripRepo.save(trip);
+      trip = em.merge(trip);
+      TripHistory tripHistory = new TripHistory();
+      tripHistory.setCreatedAt(new Date());
+      tripHistory.setTripId(trip.getId());
+      tripHistory.setRemainingSeats(trip.getNumOfPassengers());
+      tripHistory.setComment("New trip created by " + onlineUser.getUsername());
+      em.merge(tripHistory);
+      return trip;
     } catch (Exception e) {
       e.printStackTrace();
       throw new GeneralException(e.getMessage());
@@ -96,8 +115,17 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
       throw new NotFoundException("Trip");
     if (trip.getDepartedAt() != null)
       throw new BadRequestException("Trip already set as departed");
+    log.info("Trip History : {}", trip.getTripHistoryList().size());
     trip.setDepartedAt(new Date());
-    return em.merge(trip);
+    trip = em.merge(trip);
+    TripHistory tripHistory = new TripHistory();
+    tripHistory.setCreatedAt(new Date());
+    tripHistory.setTripId(trip.getId());
+    tripHistory.setTrip(trip);
+    tripHistory.setRemainingSeats(trip.getNumOfPassengers());
+    tripHistory.setComment("Trip departure time at " + trip.getDepartedAt());
+    em.merge(tripHistory);
+    return trip;
   }
 
   @Override
@@ -111,7 +139,14 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
       throw new BadRequestException("Trip already set as arrived");
     trip.setArrivedAt(new Date());
     trip.setActive(false);
-    return em.merge(trip);
+    em.merge(trip);
+    TripHistory tripHistory = new TripHistory();
+    tripHistory.setCreatedAt(new Date());
+    tripHistory.setTripId(trip.getId());
+    tripHistory.setTrip(trip);
+    tripHistory.setRemainingSeats(trip.getNumOfPassengers());
+    tripHistory.setComment("Trip arrival time at " + trip.getArrivedAt());
+    return trip;
   }
 
 }

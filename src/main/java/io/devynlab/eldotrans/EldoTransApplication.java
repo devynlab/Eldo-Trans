@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  *TODO
  * The resulting filtered list should match the filters, showing the remaining number of seats and the prices
  * Get rid of customer/passenger role. They need not have an account to access the services, meaning some endpoints will have to be whitelisted
+ * When creating a trip, optionally provide driver with an option to set number of passengers, otherwise set it to the default number
  */
 
 @SpringBootApplication

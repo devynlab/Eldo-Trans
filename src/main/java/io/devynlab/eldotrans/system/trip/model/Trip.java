@@ -7,7 +7,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "trips")
@@ -41,8 +43,8 @@ public class Trip implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY)
   private Vehicle vehicle;
 
-  @Column(name = "vehicle_id", nullable = false)
-  private Integer vehicleId;
+  @Column(name = "vehicle_id")
+  private Long vehicleId;
 
   @Column(name = "departed_at")
   @Temporal(TemporalType.TIMESTAMP)
@@ -59,5 +61,13 @@ public class Trip implements Serializable {
   @JsonIgnore
   @Column(name = "active", columnDefinition = "tinyint(1) default '0'")
   private boolean active = true;
+
+  @JsonIgnore
+  @Column(name = "available", columnDefinition = "tinyint(1) default '0'")
+  private boolean available = true;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "trip")
+  private List<TripHistory> tripHistoryList = new ArrayList<>();
 
 }
