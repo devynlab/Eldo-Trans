@@ -56,4 +56,8 @@ public class Trip implements Serializable {
   @Column(name = "deleted", columnDefinition = "tinyint(1) default '0'")
   private boolean deleted = false;
 
+  @JsonIgnore
+  @Column(name = "active", columnDefinition = "tinyint(1) default '0'")
+  private boolean active = true;
+
 }

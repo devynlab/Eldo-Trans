@@ -110,6 +110,7 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
     if (trip.getArrivedAt() != null)
       throw new BadRequestException("Trip already set as arrived");
     trip.setArrivedAt(new Date());
+    trip.setActive(false);
     return em.merge(trip);
   }
 
