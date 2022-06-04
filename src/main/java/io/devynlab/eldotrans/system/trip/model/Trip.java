@@ -1,7 +1,7 @@
 package io.devynlab.eldotrans.system.trip.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.devynlab.eldotrans.system.booking.enums.Destinations;
+import io.devynlab.eldotrans.system.trip.enums.Destinations;
 import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
 import lombok.Data;
 

@@ -1,6 +1,6 @@
 package io.devynlab.eldotrans.system.trip.dto;
 
-import io.devynlab.eldotrans.system.booking.enums.Destinations;
+import io.devynlab.eldotrans.system.trip.enums.Destinations;
 import io.devynlab.eldotrans.system.trip.model.Trip;
 import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
 import lombok.Data;
