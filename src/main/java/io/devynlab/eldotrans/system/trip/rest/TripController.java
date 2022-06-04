@@ -58,4 +58,18 @@ public class TripController extends BaseController {
     return entity(tripService.update(tripId, tripDTO));
   }
 
+  @GetMapping("/{id}/departure")
+  @ResponseBody
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity departure(@PathVariable("id") Long tripId) {
+    return entity(tripService.departure(tripId));
+  }
+
+  @GetMapping("/{id}/arrival")
+  @ResponseBody
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity arrival(@PathVariable("id") Long tripId) {
+    return entity(tripService.arrival(tripId));
+  }
+
 }

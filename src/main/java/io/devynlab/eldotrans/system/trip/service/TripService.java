@@ -16,4 +16,8 @@ public interface TripService extends BaseService<Trip, Long> {
   ObjectListWrapper<Trip> findAllFiltered(Integer page, Integer pageSize, Destinations tripFrom, Destinations tripTo, Date date);
 
   Trip update(Long tripId, TripDTO tripDTO);
+
+  Trip departure(Long tripId);
+
+  Trip arrival(Long tripId);
 }

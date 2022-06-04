@@ -3,6 +3,7 @@ package io.devynlab.eldotrans.system.trip.service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.devynlab.eldotrans.generic.dto.ObjectListWrapper;
+import io.devynlab.eldotrans.generic.exception.BadRequestException;
 import io.devynlab.eldotrans.generic.exception.GeneralException;
 import io.devynlab.eldotrans.generic.exception.NotFoundException;
 import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
@@ -86,6 +87,30 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
   @Override
   public Trip update(Long bookingId, TripDTO tripDTO) {
     return null;
+  }
+
+  @Override
+  public Trip departure(Long tripId) {
+    Trip trip = em.find(Trip.class, tripId);
+    if (trip == null)
+      throw new NotFoundException("Trip");
+    if (trip.getDepartedAt() != null)
+      throw new BadRequestException("Trip already set as departed");
+    trip.setDepartedAt(new Date());
+    return em.merge(trip);
+  }
+
+  @Override
+  public Trip arrival(Long tripId) {
+    Trip trip = em.find(Trip.class, tripId);
+    if (trip == null)
+      throw new NotFoundException("Trip");
+    if (trip.getDepartedAt() == null)
+      throw new BadRequestException("Logically, you have to first depart before you can arrive at your destination");
+    if (trip.getArrivedAt() != null)
+      throw new BadRequestException("Trip already set as arrived");
+    trip.setArrivedAt(new Date());
+    return em.merge(trip);
   }
 
 }
