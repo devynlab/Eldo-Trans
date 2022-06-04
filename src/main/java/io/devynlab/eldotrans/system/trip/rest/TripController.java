@@ -2,6 +2,7 @@ package io.devynlab.eldotrans.system.trip.rest;
 
 import io.devynlab.eldotrans.generic.controller.BaseController;
 import io.devynlab.eldotrans.system.trip.dto.TripDTO;
+import io.devynlab.eldotrans.system.trip.enums.Destinations;
 import io.devynlab.eldotrans.system.trip.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/trips")
@@ -19,18 +21,27 @@ public class TripController extends BaseController {
 
   @PostMapping()
   @ResponseBody
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasAnyRole({'ROLE_ADMIN', 'ROLE_DRIVER'})")
   public ResponseEntity post(@RequestBody @Valid TripDTO tripDTO) {
     return entity(tripService.save(tripDTO));
   }
 
   @GetMapping()
   @ResponseBody
-  @PreAuthorize("hasAnyRole({'ROLE_ADMIN', 'ROLE_DRIVER'})")
   public ResponseEntity findAll(@RequestParam(name = "page", defaultValue = "1") Integer page,
                                 @RequestParam(name = "pageSize", defaultValue = "50") Integer pageSize,
                                 @RequestParam(name = "search", required = false) String search) {
     return entity(tripService.findAllPaginated(page, pageSize, search));
+  }
+
+  @GetMapping("/filtered")
+  @ResponseBody
+  public ResponseEntity findAllFiltered(@RequestParam(name = "page", defaultValue = "1") Integer page,
+                                        @RequestParam(name = "pageSize", defaultValue = "50") Integer pageSize,
+                                        @RequestParam(name = "tripFrom") Destinations tripFrom,
+                                        @RequestParam(name = "tripTo") Destinations tripTo,
+                                        @RequestParam(name = "date") Date date) {
+    return entity(tripService.findAllFiltered(page, pageSize, tripFrom, tripTo, date));
   }
 
   @GetMapping("/{id}")

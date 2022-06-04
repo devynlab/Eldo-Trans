@@ -7,6 +7,7 @@ import io.devynlab.eldotrans.generic.exception.GeneralException;
 import io.devynlab.eldotrans.generic.exception.NotFoundException;
 import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
 import io.devynlab.eldotrans.system.trip.dto.TripDTO;
+import io.devynlab.eldotrans.system.trip.enums.Destinations;
 import io.devynlab.eldotrans.system.trip.model.Trip;
 import io.devynlab.eldotrans.system.trip.repos.TripRepository;
 import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -63,6 +65,17 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
   public ObjectListWrapper<Trip> findAllPaginated(Integer page, Integer pageSize, String search) {
     ObjectListWrapper wrapper = new ObjectListWrapper();
     HashMap<String, Object> trips = tripRepo.findAllPaged(page, pageSize, search);
+    wrapper.setList((List) trips.get("trips"));
+    wrapper.setTotal(Integer.parseInt(trips.get("trip_count").toString()));
+    wrapper.setPageSize(pageSize);
+    wrapper.setCurrentPage(page);
+    return wrapper;
+  }
+
+  @Override
+  public ObjectListWrapper<Trip> findAllFiltered(Integer page, Integer pageSize, Destinations tripFrom, Destinations tripTo, Date date) {
+    ObjectListWrapper wrapper = new ObjectListWrapper();
+    HashMap<String, Object> trips = tripRepo.findAllFiltered(page, pageSize, tripFrom, tripTo, date);
     wrapper.setList((List) trips.get("trips"));
     wrapper.setTotal(Integer.parseInt(trips.get("trip_count").toString()));
     wrapper.setPageSize(pageSize);
