@@ -12,4 +12,5 @@ public class VehicleDTO implements Serializable {
   private CarModels carModel;
   private Integer numOfSeats;
   private String color;
+  private Long driverId;
 }

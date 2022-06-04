@@ -20,6 +20,7 @@ public class UserDTO implements Serializable {
   private Long id;
   private String firstName;
   private String lastName;
+  private String phoneNumber;
   private String username;
   private String password;
   @Email
@@ -35,6 +36,7 @@ public class UserDTO implements Serializable {
     id = user.getId();
     firstName = user.getFirstName();
     lastName = user.getLastName();
+    phoneNumber = user.getPhoneNumber();
     username = user.getUsername();
     email = user.getEmail();
     roles = user.getRoles();

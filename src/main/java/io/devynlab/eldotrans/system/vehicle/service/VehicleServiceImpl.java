@@ -1,14 +1,18 @@
 package io.devynlab.eldotrans.system.vehicle.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.devynlab.eldotrans.generic.dto.ObjectListWrapper;
+import io.devynlab.eldotrans.generic.exception.GeneralException;
+import io.devynlab.eldotrans.generic.exception.NotFoundException;
 import io.devynlab.eldotrans.generic.exception.ResourceExistsException;
 import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
 import io.devynlab.eldotrans.system.vehicle.dto.VehicleDTO;
 import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
 import io.devynlab.eldotrans.system.vehicle.repos.VehicleRepository;
+import io.devynlab.eldotrans.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +45,21 @@ public class VehicleServiceImpl extends BaseServiceImpl<Vehicle, Long> implement
     if (vehicleRepo.findByNumPlate(vehicleDTO.getNumPlate()) != null) {
       throw new ResourceExistsException("Vehicle with number plate '" + vehicleDTO.getNumPlate() + "' already exists!");
     }
-    ModelMapper mapper = new ModelMapper();
-    Vehicle vehicle = mapper.map(vehicleDTO, Vehicle.class);
-    return em.merge(vehicle);
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE, false);
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+      Vehicle vehicle = objectMapper.convertValue(vehicleDTO, Vehicle.class);
+      User driver = em.find(User.class, vehicleDTO.getDriverId());
+      if (driver == null) {
+        throw new NotFoundException("User");
+      }
+      vehicle.setDriver(driver);
+      return vehicleRepo.save(vehicle);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new GeneralException(e.getMessage());
+    }
   }
 
   @Override

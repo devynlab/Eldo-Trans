@@ -3,6 +3,7 @@ package io.devynlab.eldotrans.system.vehicle.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.devynlab.eldotrans.system.trip.model.Trip;
 import io.devynlab.eldotrans.system.vehicle.enums.CarModels;
+import io.devynlab.eldotrans.user.model.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,6 +32,14 @@ public class Vehicle implements Serializable {
 
   @Column(name = "color")
   private String color;
+
+  @JsonIgnore
+  @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false, updatable = false)
+  @OneToOne(fetch = FetchType.LAZY)
+  private User driver;
+
+  @Column(name = "driver_id", nullable = false)
+  private Long driverId;
 
   @JsonIgnore
   @Column(name = "available", columnDefinition = "tinyint(1) default '1'")

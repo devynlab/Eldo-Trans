@@ -2,15 +2,15 @@ package io.devynlab.eldotrans.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.devynlab.eldotrans.generic.model.ModelBase;
+import io.devynlab.eldotrans.system.vehicle.model.Vehicle;
 import io.devynlab.eldotrans.user.enums.Gender;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -22,7 +22,11 @@ import static javax.persistence.FetchType.EAGER;
 @XmlRootElement
 @JsonInclude(NON_ABSENT)
 @Data
-public class User extends ModelBase {
+public class User implements Serializable {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Column(name = "first_name", nullable = false)
   private String firstName;
@@ -30,8 +34,7 @@ public class User extends ModelBase {
   @Column(name = "last_name", nullable = false)
   private String lastName;
 
-  @Size(max = 10)
-  @Column(name = "phone_number")
+  @Column(name = "phone_number", nullable = false)
   private String phoneNumber;
 
   @Column(name = "gender", columnDefinition = "varchar(7) default 'NA'")
@@ -50,6 +53,13 @@ public class User extends ModelBase {
 
   @ManyToMany(fetch = EAGER)
   private Collection<Role> roles = new ArrayList<>();
+
+  @OneToOne(mappedBy = "driver", cascade = CascadeType.ALL)
+  private Vehicle vehicle;
+
+  @JsonIgnore
+  @Column(name = "deleted", columnDefinition = "tinyint(1) default '0'")
+  private boolean deleted = false;
 
   public String getFullNames() {
     StringBuilder sb = new StringBuilder();
