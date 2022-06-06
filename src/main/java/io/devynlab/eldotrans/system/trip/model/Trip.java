@@ -35,6 +35,9 @@ public class Trip implements Serializable {
   @Column(name = "no_of_passengers")
   private Integer numOfPassengers;
 
+  @Column(name = "remaining_seats")
+  private Integer remainingSeats;
+
   @Column(name = "price", nullable = false)
   private Integer price;
 

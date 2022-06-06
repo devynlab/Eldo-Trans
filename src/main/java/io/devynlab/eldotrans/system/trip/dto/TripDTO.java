@@ -15,6 +15,7 @@ public class TripDTO implements Serializable {
   private Destinations tripTo;
   private Date date;
   private Integer numOfPassengers;
+  private Integer remainingSeats;
   private Integer price;
   private Vehicle vehicle;
   private Long vehicleId;
@@ -27,6 +28,7 @@ public class TripDTO implements Serializable {
     tripTo = trip.getTripTo();
     date = trip.getDate();
     numOfPassengers = trip.getNumOfPassengers();
+    remainingSeats = trip.getRemainingSeats();
     price = trip.getPrice();
     vehicle = trip.getVehicle();
     departedAt = trip.getDepartedAt();

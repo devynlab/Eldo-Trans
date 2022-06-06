@@ -1,6 +1,7 @@
 package io.devynlab.eldotrans.system.trip.rest;
 
 import io.devynlab.eldotrans.generic.controller.BaseController;
+import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
 import io.devynlab.eldotrans.system.trip.dto.TripDTO;
 import io.devynlab.eldotrans.system.trip.enums.Destinations;
 import io.devynlab.eldotrans.system.trip.service.TripService;
@@ -56,6 +57,12 @@ public class TripController extends BaseController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity update(@PathVariable("id") Long tripId, @RequestBody @Valid TripDTO tripDTO) {
     return entity(tripService.update(tripId, tripDTO));
+  }
+
+  @PutMapping("/{id}/booking")
+  @ResponseBody
+  public ResponseEntity booking(@PathVariable("id") Long tripId, @RequestBody @Valid BookingDTO bookingDTO) {
+    return entity(tripService.booking(tripId, bookingDTO));
   }
 
   @GetMapping("/{id}/departure")

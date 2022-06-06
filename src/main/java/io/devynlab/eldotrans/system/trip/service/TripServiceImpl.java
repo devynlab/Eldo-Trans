@@ -8,6 +8,7 @@ import io.devynlab.eldotrans.generic.exception.BadRequestException;
 import io.devynlab.eldotrans.generic.exception.GeneralException;
 import io.devynlab.eldotrans.generic.exception.NotFoundException;
 import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
+import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
 import io.devynlab.eldotrans.system.trip.dto.TripDTO;
 import io.devynlab.eldotrans.system.trip.enums.Destinations;
 import io.devynlab.eldotrans.system.trip.model.Trip;
@@ -66,6 +67,7 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
         }
         trip.setVehicle(vehicle);
         trip.setNumOfPassengers(vehicle.getNumOfSeats());
+        trip.setRemainingSeats(vehicle.getNumOfSeats());
       }
       trip = em.merge(trip);
       TripHistory tripHistory = new TripHistory();
@@ -109,19 +111,43 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
   }
 
   @Override
+  public Trip booking(Long tripId, BookingDTO bookingDTO) {
+    if (bookingDTO.getName() == null || bookingDTO.getPhoneNumber() == null || bookingDTO.getNumOfSeats() == null)
+      throw new BadRequestException("Please provide all the required information");
+    Trip trip = em.find(Trip.class, tripId);
+    if (trip == null)
+      throw new NotFoundException("Trip");
+    if (trip.getRemainingSeats() < 1)
+      throw new BadRequestException("Trip already full");
+    if (trip.getRemainingSeats() < bookingDTO.getNumOfSeats())
+      throw new BadRequestException("Trip available seats are less than what you desire. " + trip.getRemainingSeats() + " seats remain");
+    if (trip.getDepartedAt() != null)
+      throw new BadRequestException("You can't book this trip as it has already departed. Wait for the next trip available");
+    if (trip.getArrivedAt() != null)
+      throw new BadRequestException("You can't book this trip as it has already arrived. Wait for the next trip available");
+    trip.setRemainingSeats(trip.getRemainingSeats() - bookingDTO.getNumOfSeats());
+    trip = em.merge(trip);
+    TripHistory tripHistory = new TripHistory();
+    tripHistory.setCreatedAt(new Date());
+    tripHistory.setTripId(trip.getId());
+    tripHistory.setRemainingSeats(trip.getRemainingSeats());
+    tripHistory.setComment(bookingDTO.getName() + "(" + bookingDTO.getPhoneNumber() + ") booked " + bookingDTO.getNumOfSeats() + " seats at " + tripHistory.getCreatedAt());
+    em.merge(tripHistory);
+    return trip;
+  }
+
+  @Override
   public Trip departure(Long tripId) {
     Trip trip = em.find(Trip.class, tripId);
     if (trip == null)
       throw new NotFoundException("Trip");
     if (trip.getDepartedAt() != null)
       throw new BadRequestException("Trip already set as departed");
-    log.info("Trip History : {}", trip.getTripHistoryList().size());
     trip.setDepartedAt(new Date());
     trip = em.merge(trip);
     TripHistory tripHistory = new TripHistory();
     tripHistory.setCreatedAt(new Date());
     tripHistory.setTripId(trip.getId());
-    tripHistory.setTrip(trip);
     tripHistory.setRemainingSeats(trip.getNumOfPassengers());
     tripHistory.setComment("Trip departure time at " + trip.getDepartedAt());
     em.merge(tripHistory);

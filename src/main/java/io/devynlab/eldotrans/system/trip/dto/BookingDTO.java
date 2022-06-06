@@ -8,5 +8,6 @@ import java.io.Serializable;
 public class BookingDTO implements Serializable {
   private Long id;
   private String name;
+  private String phoneNumber;
   private Integer numOfSeats;
 }
