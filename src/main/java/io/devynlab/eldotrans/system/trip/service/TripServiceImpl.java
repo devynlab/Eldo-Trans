@@ -117,6 +117,8 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
     Trip trip = em.find(Trip.class, tripId);
     if (trip == null)
       throw new NotFoundException("Trip");
+    if (!trip.isAvailable())
+      throw new BadRequestException("Trip no longer available");
     if (trip.getRemainingSeats() < 1)
       throw new BadRequestException("Trip already full");
     if (trip.getRemainingSeats() < bookingDTO.getNumOfSeats())
@@ -144,11 +146,11 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
     if (trip.getDepartedAt() != null)
       throw new BadRequestException("Trip already set as departed");
     trip.setDepartedAt(new Date());
+    trip.setAvailable(false);
     trip = em.merge(trip);
     TripHistory tripHistory = new TripHistory();
     tripHistory.setCreatedAt(new Date());
     tripHistory.setTripId(trip.getId());
-    tripHistory.setRemainingSeats(trip.getNumOfPassengers());
     tripHistory.setComment("Trip departure time at " + trip.getDepartedAt());
     em.merge(tripHistory);
     return trip;
@@ -165,13 +167,13 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
       throw new BadRequestException("Trip already set as arrived");
     trip.setArrivedAt(new Date());
     trip.setActive(false);
-    em.merge(trip);
+    trip = em.merge(trip);
     TripHistory tripHistory = new TripHistory();
     tripHistory.setCreatedAt(new Date());
     tripHistory.setTripId(trip.getId());
     tripHistory.setTrip(trip);
-    tripHistory.setRemainingSeats(trip.getNumOfPassengers());
     tripHistory.setComment("Trip arrival time at " + trip.getArrivedAt());
+    em.merge(tripHistory);
     return trip;
   }
 
