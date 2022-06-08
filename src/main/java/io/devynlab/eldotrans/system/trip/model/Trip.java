@@ -73,4 +73,8 @@ public class Trip implements Serializable {
   @OneToMany(mappedBy = "trip")
   private List<TripHistory> tripHistoryList = new ArrayList<>();
 
+  @JsonIgnore
+  @OneToMany(mappedBy = "trip")
+  private List<Passenger> passengerList = new ArrayList<>();
+
 }

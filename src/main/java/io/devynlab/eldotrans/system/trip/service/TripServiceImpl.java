@@ -11,6 +11,7 @@ import io.devynlab.eldotrans.generic.service.BaseServiceImpl;
 import io.devynlab.eldotrans.system.trip.dto.BookingDTO;
 import io.devynlab.eldotrans.system.trip.dto.TripDTO;
 import io.devynlab.eldotrans.system.trip.enums.Destinations;
+import io.devynlab.eldotrans.system.trip.model.Passenger;
 import io.devynlab.eldotrans.system.trip.model.Trip;
 import io.devynlab.eldotrans.system.trip.model.TripHistory;
 import io.devynlab.eldotrans.system.trip.repos.TripRepository;
@@ -117,6 +118,7 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
     Trip trip = em.find(Trip.class, tripId);
     if (trip == null)
       throw new NotFoundException("Trip");
+    log.info("Num of passengers {}", trip.getPassengerList().size());
     if (!trip.isAvailable())
       throw new BadRequestException("Trip no longer available");
     if (trip.getRemainingSeats() < 1)
@@ -135,6 +137,13 @@ public class TripServiceImpl extends BaseServiceImpl<Trip, Long> implements Trip
     tripHistory.setRemainingSeats(trip.getRemainingSeats());
     tripHistory.setComment(bookingDTO.getName() + "(" + bookingDTO.getPhoneNumber() + ") booked " + bookingDTO.getNumOfSeats() + " seats at " + tripHistory.getCreatedAt());
     em.merge(tripHistory);
+    Passenger passenger = new Passenger();
+    passenger.setPhoneNum(bookingDTO.getPhoneNumber());
+    passenger.setName(bookingDTO.getName());
+    passenger.setTripId(trip.getId());
+    passenger.setNumOfSeats(bookingDTO.getNumOfSeats());
+    passenger.setTotalAmount(trip.getPrice() * passenger.getNumOfSeats());
+    em.merge(passenger);
     return trip;
   }
 
